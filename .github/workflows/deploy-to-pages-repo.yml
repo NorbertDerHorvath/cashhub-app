@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build-deploy:
@@ -31,7 +31,7 @@ jobs:
         with:
           repository: NorbertDerHorvath/NorbertDerHorvath.github.io
           path: pages
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAGES_REPO_TOKEN }}
 
       - name: Copy dist to pages repo (apps/cashhub-app)
         run: |
