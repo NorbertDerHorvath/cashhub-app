@@ -1,25 +1,22 @@
-
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import { createRoot } from 'react-dom/client';
 
-// Service Worker regisztráció a PWA-hoz
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(err => {
-      console.log('ServiceWorker registration failed: ', err);
-    });
-  });
+const rootEl = document.getElementById('root');
+
+if (!rootEl) {
+  throw new Error('Root element not found');
 }
 
-const rootElement = document.getElementById('root');
-if (!rootElement) {
-  throw new Error("Could not find root element to mount to");
+function Test() {
+  return (
+    <div style={{ padding: 20, color: 'white', fontSize: 24 }}>
+      ✅ React render OK
+    </div>
+  );
 }
 
-const root = ReactDOM.createRoot(rootElement);
-root.render(
+createRoot(rootEl).render(
   <React.StrictMode>
-    <App />
+    <Test />
   </React.StrictMode>
 );
