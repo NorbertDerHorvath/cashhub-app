@@ -1,4 +1,4 @@
-name: Build and deploy to NorbertDerHorvath.github.io/apps/cashhub-app
+name: Build and deploy cashhub-app to NorbertDerHorvath.github.io/apps/cashhub-app
 
 on:
   push:
@@ -23,25 +23,43 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build
+      - name: Build (Vite)
         run: npm run build
 
-      - name: Checkout pages repo
+      - name: Verify dist output
+        run: |
+          set -e
+          test -f dist/index.html
+          echo "dist/index.html OK"
+          echo "----- dist/index.html (first 25 lines) -----"
+          head -n 25 dist/index.html || true
+          echo "-------------------------------------------"
+
+      - name: Checkout Pages repo
         uses: actions/checkout@v4
         with:
           repository: NorbertDerHorvath/NorbertDerHorvath.github.io
           path: pages
           token: ${{ secrets.PAGES_REPO_TOKEN }}
 
-      - name: Copy dist to pages repo (apps/cashhub-app)
+      - name: Copy dist -> pages/apps/cashhub-app (clean sync)
         run: |
           set -e
-          rm -rf pages/apps/cashhub-app
           mkdir -p pages/apps/cashhub-app
-          cp -R dist/. pages/apps/cashhub-app/
+          rm -rf pages/apps/cashhub-app/*
+          cp -R dist/* pages/apps/cashhub-app/
           touch pages/.nojekyll
 
-      - name: Commit and push pages repo
+      - name: Verify deployed index.html in Pages repo
+        run: |
+          set -e
+          test -f pages/apps/cashhub-app/index.html
+          echo "pages/apps/cashhub-app/index.html OK"
+          echo "----- deployed index.html (first 25 lines) -----"
+          head -n 25 pages/apps/cashhub-app/index.html || true
+          echo "------------------------------------------------"
+
+      - name: Commit and push Pages repo
         run: |
           set -e
           cd pages
