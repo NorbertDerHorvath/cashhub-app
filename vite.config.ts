@@ -6,7 +6,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '');
 
   return {
-    base: "/apps/cashhub-app/",
+    // GitHub Pages subfolder deploy (NorbApp /apps/cashhub-app/)
+    base: '/apps/cashhub-app/',
 
     server: {
       port: 3000,
@@ -15,15 +16,15 @@ export default defineConfig(({ mode }) => {
 
     plugins: [react()],
 
+    // FONTOS: build környezetben lehet, hogy nincs GEMINI_API_KEY → legyen üres string, ne dőljön el
     define: {
-      'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY || ''),
     },
 
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
-      }
-    }
+      },
+    },
   };
 });
