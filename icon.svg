@@ -1,12 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="512" height="512" rx="128" fill="#083344"/>
-  <path d="M256 64C150 64 64 150 64 256C64 362 150 448 256 448C362 448 448 362 448 256" stroke="#22D3EE" stroke-width="32" stroke-linecap="round" stroke-dasharray="10 20"/>
-  <path d="M280 120L160 280H260V400L380 240H280V120Z" fill="url(#p0)"/>
-  <defs>
-    <linearGradient id="p0" x1="160" y1="120" x2="380" y2="400" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#22D3EE"/>
-      <stop offset="1" stop-color="#0891B2"/>
-    </linearGradient>
-  </defs>
+    <defs>
+      <linearGradient id="bg_grad" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#06B6D4"/>
+        <stop offset="1" stopColor="#0891B2"/>
+      </linearGradient>
+      <linearGradient id="bag_grad" x1="256" y1="100" x2="256" y2="400" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#FFFFFF"/>
+        <stop offset="1" stopColor="#E2E8F0"/>
+      </linearGradient>
+      <linearGradient id="coin_grad" x1="150" y1="350" x2="250" y2="450" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#FDE047"/>
+        <stop offset="1" stopColor="#EAB308"/>
+      </linearGradient>
+    </defs>
+    
+    <circle cx="256" cy="256" r="240" fill="url(#bg_grad)" />
+    
+    <path d="M256 120C200 120 160 160 160 220C160 280 180 380 256 380C332 380 352 280 352 220C352 160 312 120 256 120Z" fill="url(#bag_grad)" />
+    <path d="M256 120C280 120 300 100 300 80C300 60 280 40 256 40C232 40 212 60 212 80C212 100 232 120 256 120Z" fill="#F1F5F9" />
+    <rect x="212" y="110" width="88" height="12" rx="6" fill="#0891B2" />
+    
+    <text x="256" y="270" font-family="Arial" font-size="100" font-weight="bold" fill="#0891B2" text-anchor="middle">€</text>
+    
+    <circle cx="180" cy="380" r="70" fill="url(#coin_grad)" stroke="#CA8A04" stroke-width="4" />
+    <text x="180" y="405" font-family="Arial" font-size="70" font-weight="bold" fill="#854D0E" text-anchor="middle">%</text>
+    
+    <path d="M380 100C430 100 470 140 470 190C470 240 430 280 380 280C370 280 360 278 350 275L320 300L330 265C310 245 300 220 300 190C300 140 340 100 380 100Z" fill="#22D3EE" stroke="white" stroke-width="4" />
+    <path d="M350 160H370L375 180H410L415 160M375 180L380 210H405L410 180M385 225C385 230 381 234 376 234C371 234 367 230 367 225M410 225C410 230 406 234 401 234C396 234 392 230 392 225" stroke="white" stroke-width="4" fill="none" />
+    
+    <path d="M100 150L110 130L120 150L140 160L120 170L110 190L100 170L80 160Z" fill="white" opacity="0.8" />
+    <path d="M400 350L405 340L410 350L420 355L410 360L405 370L400 360L390 355Z" fill="white" opacity="0.6" />
 </svg>
