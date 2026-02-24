@@ -79,16 +79,23 @@ const GermanyFlag = () => (
 );
 
 const GermanyRibbon = () => (
-  <div className="fixed top-0 right-0 z-[100] pointer-events-none overflow-hidden w-32 h-32">
-    <div className="absolute top-0 right-0 bg-black w-[150%] h-4 transform rotate-45 translate-x-[20%] translate-y-[100%] shadow-lg"></div>
-    <div className="absolute top-0 right-0 bg-[#FF0000] w-[150%] h-4 transform rotate-45 translate-x-[20%] translate-y-[150%] shadow-lg"></div>
-    <div className="absolute top-0 right-0 bg-[#FFCC00] w-[150%] h-4 transform rotate-45 translate-x-[20%] translate-y-[200%] shadow-lg"></div>
+  <div className="fixed top-0 right-0 z-[100] pointer-events-none overflow-hidden w-40 h-40">
+    <div className="absolute top-0 right-0 w-[170%] h-12 transform rotate-45 translate-x-[30%] translate-y-[40%] shadow-2xl flex flex-col">
+      <div className="h-1/3 bg-black"></div>
+      <div className="h-1/3 bg-[#FF0000]"></div>
+      <div className="h-1/3 bg-[#FFCC00]"></div>
+    </div>
   </div>
 );
 
 const NorbAppLogo = () => (
-  <div className="flex items-center gap-2 group cursor-pointer">
-    <svg width="40" height="40" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-lg group-hover:scale-110 transition-transform duration-300">
+  <a 
+    href="https://norbertderhorvath.github.io" 
+    target="_blank" 
+    rel="noopener noreferrer" 
+    className="flex items-center gap-2 group cursor-pointer"
+  >
+    <svg id="norbapp-logo-svg" width="40" height="40" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-lg group-hover:scale-110 transition-transform duration-300">
       <defs>
         <linearGradient id="phone_grad" x1="160" y1="120" x2="380" y2="400" gradientUnits="userSpaceOnUse">
           <stop stopColor="#22D3EE"/>
@@ -114,11 +121,11 @@ const NorbAppLogo = () => (
       <path d="M110 180L113 174L116 180L122 183L116 186L113 192L110 186L104 183Z" fill="#22D3EE" opacity="0.6" />
     </svg>
     <span className="text-xl font-black tracking-tighter bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent uppercase">NorbApp</span>
-  </div>
+  </a>
 );
 
-const Logo = () => (
-  <svg width="40" height="40" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-xl">
+const Logo = ({ id = "main-logo-svg" }: { id?: string }) => (
+  <svg id={id} width="40" height="40" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-xl">
     <defs>
       <linearGradient id="bg_grad" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
         <stop stopColor="#06B6D4"/>
@@ -232,15 +239,66 @@ const App: React.FC = () => {
     }
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     const doc = new jsPDF();
     const today = new Date().toLocaleDateString(lang === 'hu' ? 'hu-HU' : lang === 'de' ? 'de-DE' : 'en-US');
     
-    // Watermark - App Logo (Simplified)
-    doc.setGState(new (doc as any).GState({ opacity: 0.05 }));
-    doc.setFillColor(34, 211, 238); // Cyan
-    doc.circle(105, 150, 60, 'F');
-    doc.setGState(new (doc as any).GState({ opacity: 1 }));
+    // Helper to convert SVG to Image Data URL
+    const svgToDataUrl = async (svgId: string): Promise<string> => {
+      const svg = document.getElementById(svgId) as unknown as SVGSVGElement;
+      if (!svg) return '';
+      
+      return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const data = (new XMLSerializer()).serializeToString(svg);
+        const img = new Image();
+        const svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+        
+        img.onload = () => {
+          canvas.width = 512;
+          canvas.height = 512;
+          ctx?.drawImage(img, 0, 0, 512, 512);
+          URL.revokeObjectURL(url);
+          resolve(canvas.toDataURL('image/png'));
+        };
+        img.src = url;
+      });
+    };
+
+    const mainLogoImg = await svgToDataUrl('main-logo-svg');
+    const norbAppLogoImg = await svgToDataUrl('norbapp-logo-svg');
+
+    const drawWatermark = (d: jsPDF) => {
+      if (mainLogoImg) {
+        d.setGState(new (d as any).GState({ opacity: 0.05 }));
+        d.addImage(mainLogoImg, 'PNG', 55, 100, 100, 100);
+        d.setGState(new (d as any).GState({ opacity: 1 }));
+      }
+    };
+
+    const drawFooter = (d: jsPDF, pageNum: number, totalPages: number) => {
+      d.setPage(pageNum);
+      d.setDrawColor(200, 200, 200);
+      d.line(20, 270, 190, 270);
+      
+      if (norbAppLogoImg) {
+        d.addImage(norbAppLogoImg, 'PNG', 20, 272, 8, 8);
+      }
+      
+      d.setFontSize(10);
+      d.setTextColor(8, 145, 178);
+      d.text('NorbApp', 30, 278);
+      
+      d.setFontSize(8);
+      d.setTextColor(150, 150, 150);
+      d.text('Web: norbertderhorvath.github.io', 30, 283);
+      
+      d.text(`${pageNum} / ${totalPages}`, 180, 278);
+    };
+
+    drawWatermark(doc);
 
     doc.setFontSize(22);
     doc.setTextColor(8, 51, 68); // #083344
@@ -259,12 +317,9 @@ const App: React.FC = () => {
     
     deals.forEach((deal, index) => {
       const yPos = 45 + (index * 12);
-      if (yPos > 270) {
+      if (yPos > 255) {
         doc.addPage();
-        // Redraw watermark on new page
-        doc.setGState(new (doc as any).GState({ opacity: 0.05 }));
-        doc.circle(105, 150, 60, 'F');
-        doc.setGState(new (doc as any).GState({ opacity: 1 }));
+        drawWatermark(doc);
         doc.text(`${index + 1}. ${deal.title}`, 20, 20);
         if (deal.expiryDate) {
           doc.setFontSize(8);
@@ -285,26 +340,9 @@ const App: React.FC = () => {
       }
     });
 
-    // Footer - NorbApp Logo (Simplified)
     const pageCount = (doc as any).internal.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
-      doc.setPage(i);
-      doc.setDrawColor(200, 200, 200);
-      doc.line(20, 285, 190, 285);
-      
-      // NorbApp Logo representation
-      doc.setFillColor(8, 145, 178); // #0891B2
-      doc.roundedRect(20, 288, 6, 10, 1, 1, 'F'); // Phone body
-      doc.setFillColor(34, 211, 238); // #22D3EE
-      doc.roundedRect(21, 289, 4, 8, 0.5, 0.5, 'F'); // Screen
-      
-      doc.setFontSize(10);
-      doc.setTextColor(8, 145, 178);
-      doc.text('NorbApp', 28, 295);
-      
-      doc.setFontSize(8);
-      doc.setTextColor(150, 150, 150);
-      doc.text(`Page ${i} of ${pageCount}`, 170, 295);
+      drawFooter(doc, i, pageCount);
     }
     
     doc.save(`cashback-hub-${lang}-${new Date().toISOString().split('T')[0]}.pdf`);
