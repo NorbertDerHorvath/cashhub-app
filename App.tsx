@@ -6,7 +6,7 @@ import { jsPDF } from 'jspdf';
 import { 
   ref, 
   onValue 
-} from "firebase/database";
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 type Language = 'hu' | 'en' | 'de';
 
