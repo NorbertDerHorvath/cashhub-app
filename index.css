@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+    background-color: #083344;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+/* Eltünteti a görgetősávot, de a funkció marad */
+::-webkit-scrollbar {
+    display: none;
+}

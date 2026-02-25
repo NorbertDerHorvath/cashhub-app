@@ -6,7 +6,7 @@ import { jsPDF } from 'jspdf';
 import { 
   ref, 
   onValue 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+} from "firebase/database";
 
 type Language = 'hu' | 'en' | 'de';
 
@@ -28,7 +28,8 @@ const translations = {
     pdf_expiry: "Lejárat",
     syncing: "Szinkronizálás...",
     share_msg: "Nézd meg ezt az ajánlatot a Cashback Hub-on!",
-    clipboard_msg: "Link a vágólapra másolva!"
+    clipboard_msg: "Link a vágólapra másolva!",
+    legal_notice: "Az impresszum, jogi nyilatkozatok és elérhetőségek a NorbApp weboldalon érhetők el."
   },
   en: {
     subtitle: "Private List",
@@ -47,7 +48,8 @@ const translations = {
     pdf_expiry: "Expiry",
     syncing: "Syncing...",
     share_msg: "Check out this deal on Cashback Hub!",
-    clipboard_msg: "Link copied to clipboard!"
+    clipboard_msg: "Link copied to clipboard!",
+    legal_notice: "Imprint, legal notices and contact information are available on the NorbApp website."
   },
   de: {
     subtitle: "Private Liste",
@@ -66,7 +68,8 @@ const translations = {
     pdf_expiry: "Ablauf",
     syncing: "Synchronisierung...",
     share_msg: "Schau dir dieses Angebot auf Cashback Hub an!",
-    clipboard_msg: "Link in die Zwischenablage kopiert!"
+    clipboard_msg: "Link in die Zwischenablage kopiert!",
+    legal_notice: "Impressum, rechtliche Hinweise und Kontaktinformationen finden Sie auf der NorbApp-Website."
   }
 };
 
@@ -487,10 +490,18 @@ const App: React.FC = () => {
         )}
       </main>
 
-      <footer className="max-w-6xl mx-auto px-6 py-10 text-center">
+      <footer className="max-w-6xl mx-auto px-6 py-10 text-center space-y-4">
         <p className="text-[8px] font-bold uppercase tracking-[0.4em] text-cyan-500/40">
           {t.footer}
         </p>
+        <a 
+          href="https://norbertderhorvath.github.io" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="block text-[9px] text-cyan-400/60 hover:text-cyan-400 transition-colors underline underline-offset-4 decoration-cyan-500/30"
+        >
+          {t.legal_notice}
+        </a>
       </footer>
     </div>
   );
